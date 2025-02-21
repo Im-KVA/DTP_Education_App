@@ -1,7 +1,10 @@
-import { Text, View, Image, StyleSheet } from "react-native";
+import { Text, View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Colors from "./../constant/Colors";
+import { useRouter } from "expo-router";
 
 export default function Index() {
+  const router = useRouter();
+
   return (
     <View
       style={{
@@ -37,6 +40,7 @@ export default function Index() {
         >
           Chào mừng tới ứng dụng Quản lý học tập
         </Text>
+
         <Text
           style={{
             fontSize: 15,
@@ -49,10 +53,16 @@ export default function Index() {
           giảng và ghi chép.{"\n"}
           {"\n"}🧑‍🎓 TẤT CẢ TRONG MỘT!! 🤖
         </Text>
-        <View style={styles.button}>
+
+        <TouchableOpacity
+          style={styles.button}
+          onPress={() => router.push("/auth/signUp")}
+        >
           <Text style={styles.buttonText}>Bắt đầu</Text>
-        </View>
-        <View
+        </TouchableOpacity>
+
+        <TouchableOpacity
+          onPress={() => router.push("/auth/signIn")}
           style={[
             styles.button,
             {
@@ -63,9 +73,9 @@ export default function Index() {
           ]}
         >
           <Text style={[styles.buttonText, { color: Colors.WHITE }]}>
-            Đăng nhập bằng MSV / NFC
+            Đăng nhập bằng NFC
           </Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </View>
   );
