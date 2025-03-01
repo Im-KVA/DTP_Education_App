@@ -1,10 +1,10 @@
 import { Text, View, Image, StyleSheet, TouchableOpacity } from "react-native";
 import Colors from "./../constant/Colors";
 import { useRouter } from "expo-router";
+import React from "react";
 
 export default function Index() {
   const router = useRouter();
-
   return (
     <View
       style={{
@@ -56,13 +56,13 @@ export default function Index() {
 
         <TouchableOpacity
           style={styles.button}
-          onPress={() => router.push("/auth/signUp")}
+          onPress={() => router.push("/auth/signIn")}
         >
           <Text style={styles.buttonText}>Bắt đầu</Text>
         </TouchableOpacity>
 
         <TouchableOpacity
-          onPress={() => router.push("/auth/signIn")}
+          //onPress={() => router.push("/auth/")}
           style={[
             styles.button,
             {
