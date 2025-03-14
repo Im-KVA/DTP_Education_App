@@ -2,11 +2,20 @@ import { View, Text, TextInput, StyleSheet } from "react-native";
 import React, { useState } from "react";
 import Colors from "../../constant/Colors";
 import Button from "../../components/Shared/Button";
+import { genTopicAIModel } from "../../config/modelGeminiFlash2.0Pro";
+import Prompt from "../../constant/Prompt";
 
 export default function AddClass() {
   const [loading, setLoading] = useState(false);
-  const onAIGenTopic = () => {
+  const [userInput, setUserInput] = useState();
+  const onAIGenTopic = async () => {
+    setLoading(true);
     //Create Topic from AI
+    const PROMPT = userInput + Prompt.IDEA;
+    const aiResp = await genTopicAIModel.sendMessage(PROMPT);
+    const topicIdea = aiResp.response.text();
+    console.log(topicIdea);
+    setLoading(false);
   };
   return (
     <View
@@ -49,12 +58,13 @@ export default function AddClass() {
         placeholder="Vd: Python Cơ bản, C++ Cơ bản..."
         style={styles.textInput}
         numberOfLines={3}
+        onChangeText={(value) => setUserInput(value)}
       />
 
       <Button
         text={"Tạo bài giảng"}
         type="outline"
-        onPress={() => onAIGenTopic}
+        onPress={onAIGenTopic}
         loading={loading}
       />
     </View>
