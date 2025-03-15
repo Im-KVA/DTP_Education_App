@@ -3,7 +3,7 @@ import React from "react";
 import Button from "../Shared/Button";
 import { useRouter } from "expo-router";
 
-export default function NoClass() {
+export default function NoDoc() {
   const router = useRouter();
   return (
     <View
@@ -27,11 +27,20 @@ export default function NoClass() {
           textAlign: "center",
         }}
       >
-        Bạn chưa có lớp học nào
+        Bạn chưa có tài liệu nào!!
       </Text>
-
+      <Text
+        style={{
+          fontSize: 15,
+          textAlign: "center",
+          marginTop: 5,
+        }}
+      >
+        Hãy liên hệ giảng viên của bạn để nhận tài liệu hoặc đăng ký vào một lớp
+        học
+      </Text>
       <Button
-        text={"Tham gia lớp học"}
+        text={"Đăng ký lớp học"}
         type="fill"
         onPress={() => router.push("/addClass")}
       />

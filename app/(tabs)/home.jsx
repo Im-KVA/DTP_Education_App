@@ -1,45 +1,69 @@
-import { View, Text, Platform } from "react-native";
+import { View, Text, Platform, ScrollView } from "react-native";
 import React, { useContext, useEffect, useState } from "react";
 import Header from "../../components/Home/Header";
 import Colors from "../../constant/Colors";
-import NoClass from "../../components/Home/NoClass";
+import NoDoc from "../../components/Home/NoDoc";
+import DocList from "../../components/Home/DocList";
+import Practice from "../../components/Home/Practice";
 import { UserDetailContext } from "../../context/UserDetailContext";
-import { collection, doc, getDoc, query, where } from "firebase/firestore";
+import { collection, getDocs, query, where } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import ClassList from "../../components/Home/ClassList";
+import LearnProgress from "../../components/Home/LearnProgress";
 
 export default function Home() {
-  const { userDetail, setUserDetail } = useContext(UserDetailContext);
-  const [classList, setClassList] = useState([]);
+  const { userDetail } = useContext(UserDetailContext);
+  const [docList, setDocList] = useState([]);
 
   useEffect(() => {
-    userDetail && GetClassList();
+    if (userDetail) {
+      GetDocList();
+    }
   }, [userDetail]);
 
-  const GetClassList = async () => {
-    const q = query(
-      collection(db, "Class"),
-      where("createdBy", "==", userDetail?.email)
-    );
-    const querySnapshot = await getDoc(q);
+  const GetDocList = async () => {
+    try {
+      const q = query(
+        collection(db, "docs"),
+        where("createBy", "==", userDetail?.email)
+      );
+      const querySnapshot = await getDocs(q);
 
-    querySnapshot.foreach((doc) => {
-      console.log("--", doc.data());
-      setClassList((prev) => [...prev, doc.data()]);
-    });
+      const docsArray = [];
+      querySnapshot.forEach((doc) => {
+        console.log("--", doc.data());
+        docsArray.push(doc.data());
+      });
+
+      setDocList(docsArray);
+    } catch (error) {
+      console.error("Lỗi khi lấy danh sách tài liệu:", error);
+    }
   };
 
   return (
     <View
       style={{
         padding: 25,
-        paddingTop: Platform.OS == "ios" && 45,
+        paddingTop: Platform.OS === "ios" ? 45 : 25,
         flex: 1,
         backgroundColor: Colors.WHITE,
       }}
     >
       <Header />
-      {classList?.length == 0 ? <NoClass /> : <ClassList />}
+      {docList.length === 0 ? (
+        <NoDoc />
+      ) : (
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{
+            marginTop: 5,
+          }}
+        >
+          <LearnProgress docList={docList} />
+          <Practice />
+          <DocList docList={docList} />
+        </ScrollView>
+      )}
     </View>
   );
 }
