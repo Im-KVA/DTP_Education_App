@@ -56,9 +56,7 @@ export default function AddClass() {
 
     try {
       const aiResp = await genDocsAIModel.sendMessage(PROMPT);
-
-      // Kiểm tra nội dung thực tế từ AI
-      const responseText = await aiResp.response.text();
+      const responseText = aiResp.response.text();
       console.log("Raw AI Response:", responseText);
 
       const resp = JSON.parse(responseText);

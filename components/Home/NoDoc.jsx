@@ -42,7 +42,7 @@ export default function NoDoc() {
       <Button
         text={"Đăng ký lớp học"}
         type="fill"
-        onPress={() => router.push("/addClass")}
+        onPress={() => router.push("/(tabs)/explore")}
       />
       <Button text={"Liên hệ giảng viên"} type="outline" />
     </View>

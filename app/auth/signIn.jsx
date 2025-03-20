@@ -7,6 +7,7 @@ import {
   TouchableOpacity,
   Pressable,
   ActivityIndicator,
+  Platform,
 } from "react-native";
 import React, { useState, useContext } from "react";
 import Colors from "../../constant/Colors";
@@ -25,17 +26,51 @@ export default function SignIn() {
   const [loading, setLoading] = useState(false);
   const [checkingEmail, setCheckingEmail] = useState(false);
   const [emailExists, setEmailExists] = useState(false);
+  const [userRole, setUserRole] = useState("");
 
   const checkEmailExists = async (email) => {
     if (!email.includes("@st.neu.edu.vn")) return;
 
     setCheckingEmail(true);
     try {
-      const userRef = doc(db, "users", email);
-      const result = await getDoc(userRef);
-      if (result.exists()) {
+      const userCollections = ["users", "users_teacher", "users_admin"];
+      let foundUser = null;
+
+      for (const collection of userCollections) {
+        const userRef = doc(db, collection, email);
+        const result = await getDoc(userRef);
+        if (result.exists()) {
+          foundUser = result.data();
+          setUserRole(collection);
+          break;
+        }
+      }
+
+      if (foundUser) {
+        if (
+          (userRole === "users" &&
+            Platform.OS !== "android" &&
+            Platform.OS !== "ios") ||
+          ((userRole === "users_teacher" || userRole === "users_admin") &&
+            (Platform.OS === "android" || Platform.OS === "ios"))
+        ) {
+          Toast.show({
+            type: "error",
+            text1: "Lỗi đăng nhập",
+            text2:
+              userRole === "users"
+                ? "Bạn đang dùng tài khoản sinh viên. Vui lòng đăng nhập trên điện thoại."
+                : "Tài khoản bạn đang dùng không dành cho sinh viên. Vui lòng đăng nhập trên web.",
+          });
+          setCheckingEmail(false);
+          setCurrentUser(null);
+          return;
+        }
+
+        console.log(userRole);
+
         setEmailExists(true);
-        setUserDetail(result.data());
+        setUserDetail(foundUser);
       } else {
         setEmailExists(false);
         setUserDetail(null);
@@ -65,13 +100,25 @@ export default function SignIn() {
     setLoading(true);
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      await getUserDetail();
       Toast.show({
         type: "success",
         text1: "Thành công",
         text2: "Đăng nhập thành công!",
       });
-      router.replace("/(tabs)/home");
+
+      console.log(userRole);
+
+      if (userRole === "users") {
+        await getUserDetail();
+        router.replace("/(tabs)/home");
+        console.log("students");
+      } else if (userRole === "users_teacher") {
+        router.replace("/webView/teacherView");
+        console.log("teachers");
+      } else if (userRole === "users_admin") {
+        router.replace("/webView/admin");
+        console.log("admin");
+      }
     } catch (e) {
       console.log(e);
       Toast.show({
@@ -86,7 +133,7 @@ export default function SignIn() {
 
   const getUserDetail = async () => {
     try {
-      const userRef = doc(db, "users", email);
+      const userRef = doc(db, userRole, email);
       const result = await getDoc(userRef);
       if (result.exists()) {
         setUserDetail(result.data());
@@ -105,7 +152,7 @@ export default function SignIn() {
       <Text style={styles.title}>Thông Tin Tài Khoản</Text>
 
       <TextInput
-        placeholder="Email sinh viên: ...@st.neu.edu.vn"
+        placeholder="Email: ...@st.neu.edu.vn"
         onChangeText={(value) => {
           setEmail(value);
           setEmailExists(false);

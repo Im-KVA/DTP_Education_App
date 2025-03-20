@@ -1,24 +1,25 @@
+import { useEffect, useContext } from "react";
 import { Text, View, Image, StyleSheet, TouchableOpacity } from "react-native";
-import Colors from "./../constant/Colors";
+import Colors from "../constant/Colors";
 import { useRouter } from "expo-router";
 import { onAuthStateChanged } from "firebase/auth";
-import { auth, db } from "./../config/firebaseConfig";
+import { auth, db } from "../config/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
-import { UserDetailContext } from "./../context/UserDetailContext";
-import React, { useState, useContext } from "react";
+import { UserDetailContext } from "../context/UserDetailContext";
 
 export default function Index() {
   const router = useRouter();
   const { userDetail, setUserDetail } = useContext(UserDetailContext);
 
-  React.useEffect(() => {
+  useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, async (user) => {
       if (user?.email) {
         const result = await getDoc(doc(db, "users", user.email));
         setUserDetail(result.data());
-        router.replace("./(tabs)/home");
+        router.replace("/(tabs)/home");
       }
     });
+
     return () => unsubscribe();
   }, []);
 
@@ -109,6 +110,5 @@ const styles = StyleSheet.create({
     textAlign: "center",
     color: Colors.PRIMARY,
     fontSize: 18,
-    //fontWeight: "bold",
   },
 });

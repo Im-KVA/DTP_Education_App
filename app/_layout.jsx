@@ -1,7 +1,6 @@
 import { Stack } from "expo-router";
-import { UserDetailContext } from "./../context/UserDetailContext";
+import { UserDetailContext } from "../context/UserDetailContext";
 import { useState } from "react";
-import { View, Text } from "react-native";
 
 export default function RootLayout() {
   const [userDetail, setUserDetail] = useState();

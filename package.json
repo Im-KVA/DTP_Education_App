@@ -37,6 +37,7 @@
     "firebase": "^11.4.0",
     "react": "18.3.1",
     "react-dom": "18.3.1",
+    "react-modal": "^3.16.3",
     "react-native": "0.76.7",
     "react-native-gesture-handler": "~2.20.2",
     "react-native-progress": "^5.0.1",
@@ -45,6 +46,7 @@
     "react-native-screens": "~4.4.0",
     "react-native-simple-toast": "^3.3.2",
     "react-native-toast-message": "^2.2.1",
+    "react-native-vector-icons": "^10.2.0",
     "react-native-web": "~0.19.13",
     "react-native-webview": "13.12.5"
   },

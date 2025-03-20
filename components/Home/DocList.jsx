@@ -1,11 +1,20 @@
-import { View, Text, FlatList, Image, StyleSheet } from "react-native";
+import {
+  View,
+  Text,
+  FlatList,
+  Image,
+  StyleSheet,
+  TouchableOpacity,
+} from "react-native";
 import React from "react";
 import { imageAssets } from "../../constant/Option";
 import Colors from "../../constant/Colors";
 import Feather from "@expo/vector-icons/Feather";
-import Practice from "./Practice";
+import { useRouter } from "expo-router";
 
 export default function DocList({ docList }) {
+  const router = useRouter();
+
   return (
     <View
       style={{
@@ -27,7 +36,20 @@ export default function DocList({ docList }) {
         horizontal={true}
         showsHorizontalScrollIndicator={false}
         renderItem={({ item, index }) => (
-          <View key={index} style={styles.docContainer}>
+          <TouchableOpacity
+            onPress={() =>
+              router.push({
+                pathname: "/docView",
+                params: {
+                  docParams: JSON.stringify(item),
+                  docId: item.id,
+                  classId: item.classId,
+                },
+              })
+            }
+            key={index}
+            style={styles.docContainer}
+          >
             <Image
               source={imageAssets[item.banner_image]}
               style={{
@@ -59,7 +81,7 @@ export default function DocList({ docList }) {
                 {item?.chapters?.length} Chương
               </Text>
             </View>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>
