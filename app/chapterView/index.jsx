@@ -117,12 +117,14 @@ const styles = StyleSheet.create({
   explainText: {
     fontSize: 15,
     marginTop: 5,
+    textAlign: "justify",
   },
   codeExampleText: {
     padding: 15,
     backgroundColor: Colors.BG_GRAY,
     borderRadius: 15,
     fontSize: 12,
+    textAlign: "justify",
     marginTop: 15,
   },
   codeBlock: {

@@ -1,9 +1,11 @@
-import { View, Text, FlatList, Image } from "react-native";
+import { View, Text, FlatList, Image, TouchableOpacity } from "react-native";
 import { PracticeOption } from "../../constant/Option";
 import React from "react";
 import Colors from "../../constant/Colors";
+import { useRouter } from "expo-router";
 
 export default function Practice() {
+  const router = useRouter();
   return (
     <View>
       <Text
@@ -21,7 +23,8 @@ export default function Practice() {
         scrollEnabled={false}
         numColumns={3}
         renderItem={({ item, index }) => (
-          <View
+          <TouchableOpacity
+            onPress={() => router.push("/practice/" + item.name)}
             key={index}
             style={{
               flex: 1,
@@ -48,7 +51,7 @@ export default function Practice() {
             >
               {item.name}
             </Text>
-          </View>
+          </TouchableOpacity>
         )}
       />
     </View>

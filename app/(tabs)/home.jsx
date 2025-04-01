@@ -1,4 +1,10 @@
-import { View, ScrollView, Platform, RefreshControl } from "react-native";
+import {
+  View,
+  ScrollView,
+  Platform,
+  RefreshControl,
+  Image,
+} from "react-native";
 import React, { useCallback, useContext, useEffect, useState } from "react";
 import Header from "../../components/Home/Header";
 import Colors from "../../constant/Colors";
@@ -15,8 +21,6 @@ export default function Home() {
   const [classIdList, setClassIdList] = useState([]);
   const [docIdList, setDocIdList] = useState([]);
   const [docList, setDocList] = useState([]);
-
-  const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -113,6 +117,7 @@ export default function Home() {
       }
 
       console.log("✅ Đã lấy được danh sách tài liệu");
+      // console.log(docList);
       setDocList(docsArray);
     } catch (error) {
       console.error("❌ Lỗi khi lấy danh sách tài liệu:", error);
@@ -130,30 +135,51 @@ export default function Home() {
   return (
     <View
       style={{
-        padding: 25,
-        paddingTop: Platform.OS === "ios" ? 45 : 25,
         flex: 1,
-        backgroundColor: Colors.WHITE,
       }}
     >
-      <Header />
-      {docList.length === 0 ? (
-        <NoDoc />
-      ) : (
-        <ScrollView
-          showsVerticalScrollIndicator={false}
-          style={{
-            marginTop: 5,
-          }}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
-        >
-          <LearnProgress docList={docList} />
-          <Practice />
-          <DocList docList={docList} />
-        </ScrollView>
-      )}
+      <Image
+        source={require("./../../assets/images/wave-home.png")}
+        style={{
+          position: "absolute",
+          height: 500,
+          width: "100%",
+          zIndex: -1,
+        }}
+      />
+      <View
+        style={{
+          padding: 25,
+          paddingTop: Platform.OS === "ios" ? 45 : 25,
+          flex: 1,
+          backgroundColor: Colors.WHITE + "AA",
+        }}
+      >
+        <Header />
+        {docList.length === 0 ? (
+          <ScrollView
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            <NoDoc />
+          </ScrollView>
+        ) : (
+          <ScrollView
+            showsVerticalScrollIndicator={false}
+            style={{
+              marginTop: 25,
+            }}
+            refreshControl={
+              <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            }
+          >
+            <LearnProgress docList={docList} />
+            <Practice />
+            <DocList docList={docList} />
+          </ScrollView>
+        )}
+      </View>
     </View>
   );
 }

@@ -1,5 +1,5 @@
 import { View, FlatList } from "react-native";
-import React, { useEffect, useState, useContext, useCallback } from "react";
+import React, { useState, useContext, useCallback } from "react";
 import { useLocalSearchParams, useFocusEffect } from "expo-router";
 import { doc as firestoreDoc, getDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
@@ -13,6 +13,7 @@ export default function DocView() {
   const doc = JSON.parse(docParams);
   const { userDetail } = useContext(UserDetailContext);
   const [completedChapters, setCompletedChapters] = useState([]);
+  const [classTilte, setClassTitle] = useState();
 
   const fetchCompletedChapters = async () => {
     if (!userDetail || !userDetail.msv) return;
@@ -23,6 +24,8 @@ export default function DocView() {
         const classData = classSnap.data();
         const studentId = userDetail.msv;
 
+        setClassTitle(classData?.className);
+
         if (
           classData.docs &&
           classData.docs[docId] &&
@@ -32,10 +35,7 @@ export default function DocView() {
           setCompletedChapters((prev) => {
             const newChapters =
               classData.docs[docId][studentId].completedChapters;
-            console.log(
-              "📌 Số chương hoàn thành (đã cập nhật trong setState):",
-              newChapters
-            );
+            console.log("📌 Số chương hoàn thành:", newChapters);
             return newChapters;
           });
         }
@@ -60,7 +60,7 @@ export default function DocView() {
       keyExtractor={(_, index) => index.toString()}
       ListHeaderComponent={
         <View style={{ flex: 1, backgroundColor: Colors.WHITE }}>
-          <Intro doc={doc} />
+          <Intro doc={doc} classTilte={classTilte} />
           <Chapters
             doc={doc}
             docId={docId}

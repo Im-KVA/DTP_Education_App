@@ -5,7 +5,7 @@ import React from "react";
 import Colors from "../../constant/Colors";
 import Button from "../Shared/Button";
 
-export default function Intro({ doc }) {
+export default function Intro({ doc, classTilte }) {
   return (
     <View>
       <Image
@@ -47,10 +47,15 @@ export default function Intro({ doc }) {
               color: Colors.PRIMARY,
             }}
           >
-            {doc?.chapters?.length} Chương
+            {doc?.chapters?.length} Chương - Lớp: {classTilte}
           </Text>
         </View>
-        <View>
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "column",
+          }}
+        >
           <Text
             style={{
               fontWeight: "bold",
@@ -65,6 +70,7 @@ export default function Intro({ doc }) {
               fontSize: 15,
               marginTop: 5,
               color: Colors.GRAY,
+              textAlign: "justify",
             }}
           >
             {doc?.description}

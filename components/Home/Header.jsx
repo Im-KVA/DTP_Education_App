@@ -2,6 +2,7 @@ import { View, Text, TouchableOpacity } from "react-native";
 import React, { useContext } from "react";
 import { UserDetailContext } from "./../../context/UserDetailContext";
 import Ionicons from "@expo/vector-icons/Ionicons";
+import Colors from "../../constant/Colors";
 
 export default function Header() {
   const { userDetail, setUserDetail } = useContext(UserDetailContext);
@@ -20,6 +21,7 @@ export default function Header() {
           style={{
             fontWeight: "bold",
             fontSize: 25,
+            color: Colors.LIGHT_GREEN,
           }}
         >
           Xin chào, {userDetail?.name}
@@ -28,6 +30,7 @@ export default function Header() {
           style={{
             fontSize: 15,
             marginTop: 5,
+            color: Colors.GRAY,
           }}
         >
           Học nào!
