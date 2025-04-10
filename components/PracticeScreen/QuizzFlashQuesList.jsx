@@ -33,29 +33,33 @@ export default function QuizzFlashQuesList({ item, option }) {
   };
 
   const onPress = () => {
-    const attemptCount = item.allQuizResult?.length || 0;
-    const maxAttempts = item.quizCountMax || 1;
-    let message = "";
-    let buttons = [];
+    if (option?.name == "Kiểm tra") {
+      const attemptCount = item.allQuizResult?.length || 0;
+      const maxAttempts = item.quizCountMax || 1;
+      let message = "";
+      let buttons = [];
 
-    if (attemptCount === 0) {
-      message = `Bạn chuẩn bị làm bài kiểm tra ${item.Title}, hãy đảm bảo kết nối mạng của bạn!`;
-      buttons = [
-        { text: "Ok, làm luôn", onPress: handleQuizStart },
-        { text: "Chưa muốn làm", style: "destructive" },
-      ];
-    } else if (attemptCount < maxAttempts) {
-      message = `Điểm cao nhất hiện tại là ${item.quizScore}, bạn muốn làm để cải thiện điểm không?`;
-      buttons = [
-        { text: "Ok, làm luôn", onPress: handleQuizStart },
-        { text: "Chưa muốn làm", style: "destructive" },
-      ];
+      if (attemptCount === 0) {
+        message = `Bạn chuẩn bị làm bài kiểm tra ${item.Title}, hãy đảm bảo kết nối mạng của bạn!`;
+        buttons = [
+          { text: "Ok, làm luôn", onPress: handleQuizStart },
+          { text: "Chưa muốn làm", style: "destructive" },
+        ];
+      } else if (attemptCount < maxAttempts) {
+        message = `Điểm cao nhất hiện tại là ${item.quizScore}, bạn muốn làm để cải thiện điểm không?`;
+        buttons = [
+          { text: "Ok, làm luôn", onPress: handleQuizStart },
+          { text: "Chưa muốn làm", style: "destructive" },
+        ];
+      } else {
+        message = `Số lần làm bài kiểm tra này đã hết, bạn sẽ được chuyển đến tổng kết của lần làm bài tốt nhất!`;
+        buttons = [{ text: "Oke, tôi hiểu!", onPress: handleQuizStart }];
+      }
+
+      Alert.alert("Thông báo", message, buttons);
     } else {
-      message = `Số lần làm bài kiểm tra này đã hết, bạn sẽ được chuyển đến tổng kết của lần làm bài tốt nhất!`;
-      buttons = [{ text: "Oke, tôi hiểu!", onPress: handleQuizStart }];
+      handleQuizStart();
     }
-
-    Alert.alert("Thông báo", message, buttons);
   };
 
   return (

@@ -5,9 +5,17 @@ export default {
     - User want to learn about the topic
     - Generate 5-7 Course title for study
     - Make sure it is related to description
-    - Output will be ARRAY of String in JSON FORMAT only
-    - Do not add any plain text in output
-    - Output must be Vietnamese`,
+    - Output will be ARRAY of String in JSON FORMAT only and must be Vietnamese
+    - Do not add any plain text in output or the outside of output
+    - example good output: [
+  "Tiếng Pháp cho người mới bắt đầu: Làm quen và giao tiếp cơ bản",
+  "Chinh phục Tiếng Pháp A1-A2: Xây dựng nền tảng vững chắc",
+  "Giao tiếp Tiếng Pháp tự tin: Thực hành tình huống hàng ngày",
+  "Ngữ pháp Tiếng Pháp ứng dụng: Từ lý thuyết đến thực hành",
+  "Khám phá văn hóa Pháp qua ngôn ngữ: Hiểu sâu hơn về nước Pháp",
+  "Luyện nghe nói Tiếng Pháp hiệu quả: Cải thiện kỹ năng giao tiếp",
+  "Tiếng Pháp du lịch: Tự tin khám phá các quốc gia nói tiếng Pháp"
+]`,
 
   DOC: dedent`: As you are coaching teacher
     - User want to learn about all topics
@@ -21,6 +29,7 @@ export default {
     - Generate 10 Quizz, 10 Flashcard and 10 Questions answer
     - Tag each course to one of the categorty from :["Tech & Coding","Business & Finance","Health & Fitness","Science & Engineering","Arts & Creativity"]
     - Output in JSON Format only and must be Vietnamese
+    - Alway check for any SyntaxError in output
     -  "docs": [
   {
     "Title": '<Intro to Python>',

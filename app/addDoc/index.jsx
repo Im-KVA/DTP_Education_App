@@ -16,6 +16,18 @@ import { db } from "../../config/firebaseConfig";
 import { UserDetailContext } from "../../context/UserDetailContext";
 import { useRouter } from "expo-router";
 
+function extractCleanJson(text) {
+  // Tìm đoạn JSON trong khối ```json ... ```
+  const match = text.match(/```json([\s\S]*?)```/i);
+  if (match) return match[1].trim();
+
+  // Nếu không có block ```json```, thử tìm đoạn bắt đầu bằng [
+  const firstBracket = text.indexOf("[");
+  if (firstBracket !== -1) return text.substring(firstBracket).trim();
+
+  throw new Error("Không tìm thấy JSON hợp lệ trong phản hồi.");
+}
+
 export default function AddClass() {
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState();
@@ -24,13 +36,20 @@ export default function AddClass() {
   const [selectedTopics, setSelectedTopics] = useState([]);
   const router = useRouter();
 
+  console.log(userDetail?.email);
+
   const onAIGenTopic = async () => {
     setLoading(true);
     //Create Topic from Gemini AI
     const PROMPT = userInput + Prompt.IDEA;
     const aiResp = await genTopicAIModel.sendMessage(PROMPT);
-    const topicIdea = JSON.parse(aiResp.response.text());
+    const responseText = aiResp.response.text();
+    console.log("Raw AI response:", responseText);
+
+    const cleanJson = extractCleanJson(responseText);
+    const topicIdea = JSON.parse(cleanJson);
     console.log(topicIdea);
+
     setTopics(topicIdea);
     setLoading(false);
   };
@@ -59,7 +78,8 @@ export default function AddClass() {
       const responseText = aiResp.response.text();
       console.log("Raw AI Response:", responseText);
 
-      const resp = JSON.parse(responseText);
+      const cleanJson = extractCleanJson(responseText);
+      const resp = JSON.parse(cleanJson);
 
       if (!resp || !resp.docs) {
         throw new Error("Invalid response format: docs field is missing");
@@ -70,6 +90,12 @@ export default function AddClass() {
 
       // Lưu vào Firebase
       for (const docData of docs) {
+        if (!userDetail?.email) {
+          console.error("Email người dùng không tồn tại! Hủy lưu dữ liệu.");
+          setLoading(false);
+          return;
+        }
+
         await setDoc(doc(db, "docs", Date.now().toString()), {
           ...docData,
           createOn: new Date(),
@@ -78,7 +104,7 @@ export default function AddClass() {
         console.log("Đã lưu vào Firebase:", docData);
       }
 
-      router.push("../(tabs)/home");
+      router.push("../webView/teacherView");
       setLoading(false);
     } catch (e) {
       console.error("Error generating docs:", e);
