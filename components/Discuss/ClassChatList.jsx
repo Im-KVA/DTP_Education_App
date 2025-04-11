@@ -80,70 +80,78 @@ export default function ClassChatList({ filter }) {
     );
   }
 
+  const containerStyle = {
+    height: "450px",
+    overflowY: "auto",
+  };
+
   return (
-    <FlatList
-      data={filteredClasses}
-      keyExtractor={(item) => item.id}
-      refreshControl={
-        <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-      }
-      renderItem={({ item }) => {
-        return (
-          <View style={styles.classItem}>
-            <TouchableOpacity
-              onPress={() =>
-                router.push({
-                  pathname: "/chatroom",
-                  params: { classId: item.id },
-                })
-              }
-            >
-              <Text style={styles.className}>{item.className}</Text>
-              <Text style={styles.studentCount}>
-                Số lượng: {item.numStudent} / {item.numStudentMax}
-              </Text>
-            </TouchableOpacity>
-
-            <TouchableOpacity
-              onPress={async () => {
-                const classRef = doc(db, "classes", item.id);
-                try {
-                  const classSnap = await getDoc(classRef);
-                  const data = classSnap.data();
-                  const currentHidden = data.hiddenFor || {};
-                  const newHidden = {
-                    ...currentHidden,
-                    [userDetail.email]: !currentHidden?.[userDetail.email],
-                  };
-
-                  await updateDoc(classRef, { hiddenFor: newHidden });
-                  fetchClasses();
-                } catch (err) {
-                  console.error("Lỗi khi cập nhật hiddenFor:", err);
+    <View style={containerStyle}>
+      <FlatList
+        data={filteredClasses}
+        showsVerticalScrollIndicator={false}
+        keyExtractor={(item) => item.id}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        renderItem={({ item }) => {
+          return (
+            <View style={styles.classItem}>
+              <TouchableOpacity
+                onPress={() =>
+                  router.push({
+                    pathname: "/chatroom",
+                    params: { classId: item.id },
+                  })
                 }
-              }}
-              style={[
-                styles.hideToggleContainer,
-                item.hiddenFor?.[userDetail.email]
-                  ? { backgroundColor: Colors.LIGHT_GREEN }
-                  : { backgroundColor: Colors.LIGHT_RED },
-              ]}
-            >
-              <Text
+              >
+                <Text style={styles.className}>{item.className}</Text>
+                <Text style={styles.studentCount}>
+                  Số lượng: {item.numStudent} / {item.numStudentMax}
+                </Text>
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                onPress={async () => {
+                  const classRef = doc(db, "classes", item.id);
+                  try {
+                    const classSnap = await getDoc(classRef);
+                    const data = classSnap.data();
+                    const currentHidden = data.hiddenFor || {};
+                    const newHidden = {
+                      ...currentHidden,
+                      [userDetail.email]: !currentHidden?.[userDetail.email],
+                    };
+
+                    await updateDoc(classRef, { hiddenFor: newHidden });
+                    fetchClasses();
+                  } catch (err) {
+                    console.error("Lỗi khi cập nhật hiddenFor:", err);
+                  }
+                }}
                 style={[
-                  styles.hideToggleText,
+                  styles.hideToggleContainer,
                   item.hiddenFor?.[userDetail.email]
-                    ? styles.showColor
-                    : styles.hideColor,
+                    ? { backgroundColor: Colors.LIGHT_GREEN }
+                    : { backgroundColor: Colors.LIGHT_RED },
                 ]}
               >
-                {item.hiddenFor?.[userDetail.email] ? "Hiện" : "Ẩn"}
-              </Text>
-            </TouchableOpacity>
-          </View>
-        );
-      }}
-    />
+                <Text
+                  style={[
+                    styles.hideToggleText,
+                    item.hiddenFor?.[userDetail.email]
+                      ? styles.showColor
+                      : styles.hideColor,
+                  ]}
+                >
+                  {item.hiddenFor?.[userDetail.email] ? "Hiện" : "Ẩn"}
+                </Text>
+              </TouchableOpacity>
+            </View>
+          );
+        }}
+      />
+    </View>
   );
 }
 

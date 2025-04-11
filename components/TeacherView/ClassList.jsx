@@ -3,7 +3,7 @@ import { collection, onSnapshot, doc, getDoc } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import * as XLSX from "xlsx";
 import { saveAs } from "file-saver";
-import AddDocModal from "./AddDocModal";
+import AddDocToClassModal from "./AddDocToClassModal";
 import ClassViewModal from "./ClassViewModal";
 
 const ClassList = ({ teacherId, teacherEmail }) => {
@@ -122,7 +122,13 @@ const ClassList = ({ teacherId, teacherEmail }) => {
       <p style={{ fontWeight: "bold", color: "#333" }}>
         Email giáo viên: {teacherEmail}
       </p>
-      <div style={{ maxHeight: "70vh", overflowY: "auto", padding: 10 }}>
+      <div
+        style={{
+          maxHeight: "calc(100vh - 30vh)",
+          overflowY: "auto",
+          padding: 10,
+        }}
+      >
         {" "}
         {classes.map((cls) => (
           <div key={cls.id} style={classCardStyle}>
@@ -159,7 +165,7 @@ const ClassList = ({ teacherId, teacherEmail }) => {
       </div>
 
       {isModalOpen && selectedClass && (
-        <AddDocModal
+        <AddDocToClassModal
           isOpen={isModalOpen}
           onClose={() => setIsModalOpen(false)}
           classId={selectedClass}

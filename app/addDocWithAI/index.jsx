@@ -28,7 +28,7 @@ function extractCleanJson(text) {
   throw new Error("Không tìm thấy JSON hợp lệ trong phản hồi.");
 }
 
-export default function AddClass() {
+export default function AddDocWithAI() {
   const [loading, setLoading] = useState(false);
   const [userInput, setUserInput] = useState();
   const { userDetail, setUserDetail } = useContext(UserDetailContext);
@@ -127,7 +127,7 @@ export default function AddClass() {
           marginTop: 30,
         }}
       >
-        Tạo Lớp Học Mới
+        Tạo khung bài giảng với AI (Kiến thức từ AI chỉ nên dùng để tham khảo)
       </Text>
 
       <Text

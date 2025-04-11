@@ -17,10 +17,10 @@ import {
 } from "firebase/auth";
 import { auth, db } from "../../config/firebaseConfig";
 import { doc, setDoc } from "firebase/firestore";
-import { UserDetailContext } from "./../../context/UserDetailContext";
+import { UserDetailContext } from "../../context/UserDetailContext";
 import { useLocalSearchParams } from "expo-router";
 
-export default function SignUpOrChangePassword() {
+export default function ChangePassword() {
   const params = useLocalSearchParams();
   const router = useRouter();
   const [email, setEmail] = useState(params.email || "");
@@ -29,7 +29,7 @@ export default function SignUpOrChangePassword() {
   const [newPassword, setNewPassword] = useState("");
   const { setUserDetail } = useContext(UserDetailContext);
 
-  const ChangePassword = async () => {
+  const changePassword = async () => {
     if (!msv || !email || !password || !newPassword) {
       Alert.alert("Thông báo", "Vui lòng nhập đầy đủ thông tin!");
       return;
@@ -51,6 +51,8 @@ export default function SignUpOrChangePassword() {
       await reauthenticateWithCredential(user, credential);
       await updatePassword(user, newPassword);
       Alert.alert("Thông báo", "Mật khẩu đã được cập nhật thành công!");
+
+      router.back();
     } catch (error) {
       console.log(error);
       Alert.alert(
@@ -92,7 +94,7 @@ export default function SignUpOrChangePassword() {
         secureTextEntry
         style={styles.textInput}
       />
-      <TouchableOpacity onPress={ChangePassword} style={styles.button}>
+      <TouchableOpacity onPress={changePassword} style={styles.button}>
         <Text style={styles.buttonText}>Đổi mật khẩu</Text>
       </TouchableOpacity>
     </View>

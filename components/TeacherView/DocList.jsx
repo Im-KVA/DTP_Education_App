@@ -1,20 +1,23 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   collection,
   getDocs,
   deleteDoc,
   doc,
+  setDoc,
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
 import DocEditModal from "./DocEditModal";
 import { useRouter } from "expo-router";
+import { UserDetailContext } from "../../context/UserDetailContext";
 
 const DocList = ({ teacherId }) => {
   const [docs, setDocs] = useState([]);
   const [loading, setLoading] = useState(true);
   const [selectedDoc, setSelectedDoc] = useState(null);
   const [showModal, setShowModal] = useState(false);
+  const { userDetail } = useContext(UserDetailContext);
 
   const router = useRouter();
 
@@ -53,10 +56,10 @@ const DocList = ({ teacherId }) => {
     setShowModal(true);
   };
 
-  // const handleAddNew = () => {
-  //   setSelectedDoc(null);
-  //   setShowModal(true);
-  // };
+  const handleAddNew = () => {
+    setSelectedDoc(null);
+    setShowModal(true);
+  };
 
   if (loading) return <p>Đang tải...</p>;
   if (docs.length === 0) return <p>Không có tài liệu nào.</p>;
@@ -73,19 +76,38 @@ const DocList = ({ teacherId }) => {
 
         <button
           style={{
-            marginBottom: "10px",
-            padding: "10px",
+            ...addDocButton,
             backgroundColor: "#28a745",
-            color: "white",
-            border: "none",
-            borderRadius: "5px",
-            cursor: "pointer",
           }}
-          onClick={() => router.push("/addDoc")}
+          onClick={() => router.push("/addDocWithAI")}
           onMouseEnter={(e) => (e.target.style.backgroundColor = "#218838")}
           onMouseLeave={(e) => (e.target.style.backgroundColor = "#28a745")}
         >
-          ➕ Thêm tài liệu với AI
+          ➕ Thêm tài liệu bằng AI
+        </button>
+        <button
+          style={{
+            ...addDocButton,
+            backgroundColor: "#4287f5",
+            marginLeft: 10,
+          }}
+          onClick={() => router.push("/addDocWithJSON")}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "#728bb3")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "#4287f5")}
+        >
+          ➕ Thêm tài liệu bằng JSON
+        </button>
+        <button
+          style={{
+            ...addDocButton,
+            backgroundColor: "#d6a81c",
+            marginLeft: 10,
+          }}
+          onClick={() => handleAddNew()}
+          onMouseEnter={(e) => (e.target.style.backgroundColor = "#9fa132")}
+          onMouseLeave={(e) => (e.target.style.backgroundColor = "#d6a81c")}
+        >
+          ➕ Thêm tài liệu thủ công
         </button>
       </div>
 
@@ -178,6 +200,22 @@ const DocList = ({ teacherId }) => {
           }}
         />
       )}
+
+      {showModal && selectedDoc === null && (
+        <DocEditModal
+          isOpen={showModal}
+          onClose={() => setShowModal(false)}
+          docData={selectedDoc}
+          onSave={async (updatedData) => {
+            await setDoc(doc(db, "docs", Date.now().toString()), {
+              ...updatedData,
+              createOn: new Date(),
+              createBy: userDetail.email,
+            });
+            setShowModal(false);
+          }}
+        />
+      )}
     </div>
   );
 };
@@ -205,4 +243,13 @@ const headerStyle = {
   position: "sticky",
   zIndex: 1,
   top: 0,
+};
+
+const addDocButton = {
+  marginBottom: "10px",
+  padding: "10px",
+  color: "white",
+  border: "none",
+  borderRadius: "5px",
+  cursor: "pointer",
 };

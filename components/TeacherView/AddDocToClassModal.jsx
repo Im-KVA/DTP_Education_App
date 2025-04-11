@@ -7,12 +7,12 @@ import {
   updateDoc,
 } from "firebase/firestore";
 import { db } from "../../config/firebaseConfig";
-import RNPickerSelect from "react-native-picker-select";
 
-const AddDocModal = ({ isOpen, onClose, classId, teacherEmail }) => {
+const AddDocToClassModal = ({ isOpen, onClose, classId, teacherEmail }) => {
   const [docs, setDocs] = useState([]);
   const [selectedDoc, setSelectedDoc] = useState("");
   const [loading, setLoading] = useState(true);
+  const [confirmOverwrite, setConfirmOverwrite] = useState(false);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -42,8 +42,6 @@ const AddDocModal = ({ isOpen, onClose, classId, teacherEmail }) => {
       return;
     }
 
-    console.log(`📂 Đang thêm tài liệu: ${selectedDoc} vào lớp ${classId}`);
-
     try {
       const classRef = doc(db, "classes", classId);
       const classSnap = await getDoc(classRef);
@@ -54,7 +52,15 @@ const AddDocModal = ({ isOpen, onClose, classId, teacherEmail }) => {
       }
 
       const classData = classSnap.data();
-      console.log("🎓 Dữ liệu lớp:", classData);
+      const existingDocs = classData.docs || {};
+
+      if (existingDocs[selectedDoc] && !confirmOverwrite) {
+        const isConfirmed = window.confirm(
+          "📢 Tài liệu đã tồn tại trong lớp học.\nBạn có muốn ghi đè lại tài liệu không?\n⚠ Ghi đè sẽ làm mới toàn bộ dữ liệu bảng điểm."
+        );
+        if (!isConfirmed) return;
+        setConfirmOverwrite(true); // Cờ cho biết người dùng đã chấp nhận ghi đè
+      }
 
       const students = classData.students || {};
       const studentIds = Object.keys(students);
@@ -63,8 +69,6 @@ const AddDocModal = ({ isOpen, onClose, classId, teacherEmail }) => {
         console.warn("⚠ Lớp chưa có sinh viên!");
         return;
       }
-
-      console.log("👩‍🎓 Danh sách sinh viên:", studentIds);
 
       const studentData = {};
       for (const studentId of studentIds) {
@@ -76,35 +80,16 @@ const AddDocModal = ({ isOpen, onClose, classId, teacherEmail }) => {
           const msv = studentInfo.msv || studentId;
           studentData[msv] = { completedChapters: [], quizScore: 0 };
         } else {
-          console.warn(
-            `⚠ Không tìm thấy thông tin của sinh viên: ${studentId}`
-          );
+          console.warn(`⚠ Không tìm thấy thông tin sinh viên: ${studentId}`);
         }
       }
-
-      console.log("📝 Dữ liệu sinh viên mới:", studentData);
-
-      const existingDocs = classData.docs || {};
-      const existingDocData = existingDocs[selectedDoc] || {};
-
-      console.log("📌 Dữ liệu tài liệu trước khi cập nhật:", existingDocData);
-
-      const updatedDocData = { ...existingDocData };
-
-      for (const msv in studentData) {
-        if (!(msv in updatedDocData)) {
-          updatedDocData[msv] = studentData[msv];
-        }
-      }
-
-      console.log("✅ Dữ liệu tài liệu sau khi cập nhật:", updatedDocData);
 
       await updateDoc(classRef, {
-        [`docs.${selectedDoc}`]: updatedDocData,
+        [`docs.${selectedDoc}`]: studentData, // Ghi đè toàn bộ
       });
 
       console.log("🎉 Tài liệu đã được cập nhật thành công!");
-
+      setConfirmOverwrite(false); // Reset lại cờ sau khi xử lý
       onClose();
     } catch (error) {
       console.error("❌ Lỗi thêm tài liệu:", error);
@@ -125,22 +110,23 @@ const AddDocModal = ({ isOpen, onClose, classId, teacherEmail }) => {
         {loading ? (
           <p>Đang tải tài liệu...</p>
         ) : (
-          // <select
-          //   value={selectedDoc}
-          //   onChange={(e) => setSelectedDoc(e.target.value)}
-          // >
-          //   <option value="">Chọn tài liệu</option>
-          //   {docs.map((doc) => (
-          //     <option key={doc.id} value={doc.id}>
-          //       {doc.Title}
-          //     </option>
-          //   ))}
-          // </select>
-          <RNPickerSelect
-            onValueChange={(value) => setSelectedDoc(value)}
-            items={options}
-            placeholder={{ label: "Chọn tài liệu", value: null }}
-          />
+          <select
+            style={{
+              maxWidth: "100%",
+              width: "100%",
+            }}
+            value={selectedDoc}
+            onChange={(e) => setSelectedDoc(e.target.value)}
+          >
+            <option value="">Chọn tài liệu</option>
+            {docs.map((doc) => (
+              <option key={doc.id} value={doc.id} title={doc.Title}>
+                {doc.Title.length > 50
+                  ? doc.Title.slice(0, 47) + "..."
+                  : doc.Title}
+              </option>
+            ))}
+          </select>
         )}
         <div style={{ marginTop: "10px" }}>
           <button onClick={handleAddDoc} disabled={!selectedDoc}>
@@ -155,7 +141,7 @@ const AddDocModal = ({ isOpen, onClose, classId, teacherEmail }) => {
   );
 };
 
-export default AddDocModal;
+export default AddDocToClassModal;
 
 const modalOverlay = {
   position: "fixed",
@@ -170,7 +156,7 @@ const modalOverlay = {
 };
 
 const modalContent = {
-  position: "relative",
+  //position: "relative",
   backgroundColor: "#fff",
   padding: "20px",
   borderRadius: "8px",

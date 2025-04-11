@@ -198,7 +198,7 @@ export default function SignIn() {
             <Pressable
               onPress={() =>
                 router.push({
-                  pathname: "/auth/signUpOrChangePassword",
+                  pathname: "/auth/changePassword",
                   params: { email, msv: userDetail?.msv || "" },
                 })
               }

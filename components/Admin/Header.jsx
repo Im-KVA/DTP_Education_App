@@ -1,10 +1,39 @@
-import { View, Text } from "react-native";
-import React from "react";
+import { useState } from "react";
 
-export default function Header() {
+const Header = ({ setView }) => {
   return (
-    <View>
-      <Text>Header</Text>
-    </View>
+    <div style={{ padding: 20 }}>
+      <button
+        onClick={() => setView("classes")}
+        style={{
+          marginRight: "10px",
+          padding: "10px",
+          backgroundColor: "#007bff",
+          color: "white",
+        }}
+      >
+        Danh sách lớp
+      </button>
+      <button
+        onClick={() => setView("students")}
+        style={{
+          marginRight: "10px",
+          padding: "10px",
+          backgroundColor: "#28a745",
+          color: "white",
+        }}
+      >
+        Danh sách học sinh
+      </button>
+
+      <button
+        onClick={() => setView("teachers")}
+        style={{ padding: "10px", backgroundColor: "#e0a22d", color: "white" }}
+      >
+        Danh sách giáo viên
+      </button>
+    </div>
   );
-}
+};
+
+export default Header;

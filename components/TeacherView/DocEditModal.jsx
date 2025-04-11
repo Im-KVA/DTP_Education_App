@@ -105,6 +105,18 @@ const DocEditModal = ({ isOpen, onClose, docData, onSave }) => {
                 <div style={{ marginBottom: 5, fontWeight: "bold" }}>
                   Chương {i + 1}:
                 </div>
+                <button
+                  onClick={() => {
+                    const updatedChapters = [...chapters];
+                    updatedChapters.splice(i, 1);
+                    setChapters(updatedChapters);
+                  }}
+                  style={deleteButton}
+                  title="Xoá chương"
+                >
+                  Xóa chương này 👇
+                </button>
+
                 <input
                   type="text"
                   value={ch.chapterName}
@@ -143,15 +155,7 @@ const DocEditModal = ({ isOpen, onClose, docData, onSave }) => {
                             content: updatedContent,
                           });
                         }}
-                        style={{
-                          marginBottom: 5,
-                          backgroundColor: "#f44336",
-                          color: "white",
-                          border: "none",
-                          borderRadius: 15,
-                          padding: 5,
-                          cursor: "pointer",
-                        }}
+                        style={deleteButton}
                         title="Xoá nội dung"
                       >
                         Xóa nội dung này 👇
@@ -262,6 +266,18 @@ const DocEditModal = ({ isOpen, onClose, docData, onSave }) => {
           <div>
             {flashcards.map((fc, i) => (
               <div key={i} style={{ marginBottom: 10 }}>
+                <button
+                  onClick={() => {
+                    const updatedFlashcards = [...flashcards];
+                    updatedFlashcards.splice(i, 1);
+                    setFlashcards(updatedFlashcards);
+                  }}
+                  style={deleteButton}
+                  title="Xoá flashcards"
+                >
+                  Xóa flashcard này 👇
+                </button>
+
                 <div style={{ marginBottom: 5, fontWeight: "bold" }}>
                   Flashcard {i + 1}:
                 </div>
@@ -320,6 +336,18 @@ const DocEditModal = ({ isOpen, onClose, docData, onSave }) => {
           <div>
             {qa.map((item, i) => (
               <div key={i} style={{ marginBottom: 10 }}>
+                <button
+                  onClick={() => {
+                    const updatedQa = [...qa];
+                    updatedQa.splice(i, 1);
+                    setQa(updatedQa);
+                  }}
+                  style={deleteButton}
+                  title="Xoá câu hỏi"
+                >
+                  Xóa câu hỏi này 👇
+                </button>
+
                 <div style={{ marginBottom: 10, fontWeight: "bold" }}>
                   Câu hỏi {i + 1}:
                 </div>
@@ -389,6 +417,18 @@ const DocEditModal = ({ isOpen, onClose, docData, onSave }) => {
           <div>
             {quiz.map((item, i) => (
               <div key={i} style={{ marginBottom: 10 }}>
+                <button
+                  onClick={() => {
+                    const updatedQiz = [...quiz];
+                    updatedQiz.splice(i, 1);
+                    setQuiz(updatedQiz);
+                  }}
+                  style={deleteButton}
+                  title="Xoá câu hỏi"
+                >
+                  Xóa câu hỏi này 👇
+                </button>
+
                 <div style={{ marginBottom: 10, fontWeight: "bold" }}>
                   Câu hỏi {i + 1}:
                 </div>
@@ -590,4 +630,14 @@ const saveBtnStyle = {
 
 saveBtnStyle["&:hover"] = {
   backgroundColor: "#45a049",
+};
+
+const deleteButton = {
+  marginBottom: 15,
+  backgroundColor: "#f44336",
+  color: "white",
+  border: "none",
+  borderRadius: 15,
+  padding: 5,
+  cursor: "pointer",
 };

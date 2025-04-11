@@ -248,71 +248,79 @@ const ClassList = () => {
 
       {loading && <p>Đang tải dữ liệu...</p>}
 
-      <table style={tableStyle}>
-        <thead>
-          <tr>
-            <th style={{ ...thStyle, textAlign: "left" }}>Tên lớp</th>
-            <th style={{ ...thStyle, textAlign: "left" }}>Mã lớp</th>
-            <th style={{ ...thStyle, textAlign: "left" }}>Giảng viên</th>
-            <th style={thStyle}>Trạng thái</th>
-            <th style={thStyle}>Số lượng SV</th>
-            <th style={thStyle}>Hành động</th>
-          </tr>
-        </thead>
-        <tbody>
-          {filteredClasses.map((c) => (
-            <tr key={c.id} style={trStyle}>
-              <td style={{ ...tdStyle, textAlign: "left" }}>{c.className}</td>
-              <td style={{ ...tdStyle, textAlign: "left" }}>{c.id}</td>
-              <td style={{ ...tdStyle, textAlign: "left" }}>
-                {teacherNames[c.classTeacherId] || c.classTeacherId}
-              </td>
-              <td
-                style={{
-                  ...tdStyle,
-                  color: c.status === "open" ? "green" : "red",
-                  fontStyle: c.status === "closed" ? "italic" : "normal",
-                }}
-              >
-                {c.status === "open" ? "Đang mở - Chờ duyệt" : "Lớp đã đóng"}
-              </td>
-              <td style={tdStyle}>
-                {c.numStudent}/{c.numStudentMax}
-              </td>
-              <td style={tdStyle}>
-                <button
-                  onClick={() => startEditClass(c)}
-                  style={{ ...buttonStyle, backgroundColor: "gray" }}
-                >
-                  Chỉnh sửa
-                </button>
-                {filter === "pending" && (
-                  <button
-                    onClick={() => updateClassStatus(c)}
-                    style={{
-                      ...buttonStyle,
-                      backgroundColor:
-                        c.numStudent >= Math.ceil((2 / 3) * c.numStudentMax)
-                          ? "blue"
-                          : "red",
-                    }}
-                  >
-                    Duyệt lớp
-                  </button>
-                )}
-                {filter === "approved" && (
-                  <button
-                    onClick={() => reopenClass(c)}
-                    style={{ ...buttonStyle, backgroundColor: "orange" }}
-                  >
-                    Mở lại lớp
-                  </button>
-                )}
-              </td>
+      <div
+        style={{
+          overflowY: "auto",
+          maxHeight: "calc(100dvh - 30dvh)",
+          paddingBottom: "10px",
+        }}
+      >
+        <table style={tableStyle}>
+          <thead>
+            <tr>
+              <th style={{ ...thStyle, textAlign: "left" }}>Tên lớp</th>
+              <th style={{ ...thStyle, textAlign: "left" }}>Mã lớp</th>
+              <th style={{ ...thStyle, textAlign: "left" }}>Giảng viên</th>
+              <th style={thStyle}>Trạng thái</th>
+              <th style={thStyle}>Số lượng SV</th>
+              <th style={thStyle}>Hành động</th>
             </tr>
-          ))}
-        </tbody>
-      </table>
+          </thead>
+          <tbody>
+            {filteredClasses.map((c) => (
+              <tr key={c.id} style={trStyle}>
+                <td style={{ ...tdStyle, textAlign: "left" }}>{c.className}</td>
+                <td style={{ ...tdStyle, textAlign: "left" }}>{c.id}</td>
+                <td style={{ ...tdStyle, textAlign: "left" }}>
+                  {teacherNames[c.classTeacherId] || c.classTeacherId}
+                </td>
+                <td
+                  style={{
+                    ...tdStyle,
+                    color: c.status === "open" ? "green" : "red",
+                    fontStyle: c.status === "closed" ? "italic" : "normal",
+                  }}
+                >
+                  {c.status === "open" ? "Đang mở - Chờ duyệt" : "Lớp đã đóng"}
+                </td>
+                <td style={tdStyle}>
+                  {c.numStudent}/{c.numStudentMax}
+                </td>
+                <td style={tdStyle}>
+                  <button
+                    onClick={() => startEditClass(c)}
+                    style={{ ...buttonStyle, backgroundColor: "gray" }}
+                  >
+                    Chỉnh sửa
+                  </button>
+                  {filter === "pending" && (
+                    <button
+                      onClick={() => updateClassStatus(c)}
+                      style={{
+                        ...buttonStyle,
+                        backgroundColor:
+                          c.numStudent >= Math.ceil((2 / 3) * c.numStudentMax)
+                            ? "blue"
+                            : "red",
+                      }}
+                    >
+                      Duyệt lớp
+                    </button>
+                  )}
+                  {filter === "approved" && (
+                    <button
+                      onClick={() => reopenClass(c)}
+                      style={{ ...buttonStyle, backgroundColor: "orange" }}
+                    >
+                      Mở lại lớp
+                    </button>
+                  )}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      </div>
 
       {showAddClass && (
         <div style={popupStyle}>
@@ -432,6 +440,7 @@ const tdStyle = {
   textAlign: "center",
 };
 const trStyle = { borderBottom: "1px solid black" };
+
 const popupStyle = {
   position: "fixed",
   top: "50%",
