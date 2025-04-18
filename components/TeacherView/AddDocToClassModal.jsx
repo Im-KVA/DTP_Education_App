@@ -13,6 +13,7 @@ const AddDocToClassModal = ({ isOpen, onClose, classId, teacherEmail }) => {
   const [selectedDoc, setSelectedDoc] = useState("");
   const [loading, setLoading] = useState(true);
   const [confirmOverwrite, setConfirmOverwrite] = useState(false);
+  const [quizCountMax, setQuizCountMax] = useState(1);
 
   useEffect(() => {
     if (!isOpen) return;
@@ -59,7 +60,7 @@ const AddDocToClassModal = ({ isOpen, onClose, classId, teacherEmail }) => {
           "📢 Tài liệu đã tồn tại trong lớp học.\nBạn có muốn ghi đè lại tài liệu không?\n⚠ Ghi đè sẽ làm mới toàn bộ dữ liệu bảng điểm."
         );
         if (!isConfirmed) return;
-        setConfirmOverwrite(true); // Cờ cho biết người dùng đã chấp nhận ghi đè
+        setConfirmOverwrite(true);
       }
 
       const students = classData.students || {};
@@ -78,18 +79,21 @@ const AddDocToClassModal = ({ isOpen, onClose, classId, teacherEmail }) => {
         if (studentSnap.exists()) {
           const studentInfo = studentSnap.data();
           const msv = studentInfo.msv || studentId;
-          studentData[msv] = { completedChapters: [], quizScore: 0 };
+          studentData[msv] = {
+            completedChapters: [],
+            quizCountMax: quizCountMax,
+          };
         } else {
           console.warn(`⚠ Không tìm thấy thông tin sinh viên: ${studentId}`);
         }
       }
 
       await updateDoc(classRef, {
-        [`docs.${selectedDoc}`]: studentData, // Ghi đè toàn bộ
+        [`docs.${selectedDoc}`]: studentData,
       });
 
       console.log("🎉 Tài liệu đã được cập nhật thành công!");
-      setConfirmOverwrite(false); // Reset lại cờ sau khi xử lý
+      setConfirmOverwrite(false);
       onClose();
     } catch (error) {
       console.error("❌ Lỗi thêm tài liệu:", error);
@@ -128,6 +132,24 @@ const AddDocToClassModal = ({ isOpen, onClose, classId, teacherEmail }) => {
             ))}
           </select>
         )}
+        <div style={{ margin: "10px 0" }}>
+          <label>
+            Số lần làm bài kiểm tra tối đa:
+            <input
+              type="number"
+              min={1}
+              value={quizCountMax}
+              onChange={(e) => setQuizCountMax(parseInt(e.target.value) || 1)}
+              style={{
+                marginLeft: "10px",
+                width: "60px",
+                padding: "4px",
+                borderRadius: "4px",
+                border: "1px solid #ccc",
+              }}
+            />
+          </label>
+        </div>
         <div style={{ marginTop: "10px" }}>
           <button onClick={handleAddDoc} disabled={!selectedDoc}>
             Thêm

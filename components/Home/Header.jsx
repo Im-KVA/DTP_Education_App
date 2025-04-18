@@ -1,11 +1,14 @@
 import { View, Text, TouchableOpacity } from "react-native";
 import React, { useContext } from "react";
 import { UserDetailContext } from "./../../context/UserDetailContext";
-import Ionicons from "@expo/vector-icons/Ionicons";
+import AntDesign from "@expo/vector-icons/AntDesign";
 import Colors from "../../constant/Colors";
+import { useRouter } from "expo-router";
 
 export default function Header() {
   const { userDetail, setUserDetail } = useContext(UserDetailContext);
+  const router = useRouter();
+
   return (
     <View
       style={{
@@ -36,8 +39,8 @@ export default function Header() {
           Học nào!
         </Text>
       </View>
-      <TouchableOpacity>
-        <Ionicons name="settings-outline" size={32} color="black" />
+      <TouchableOpacity onPress={() => router.push("/classStudentList")}>
+        <AntDesign name="book" size={32} color="black" />
       </TouchableOpacity>
     </View>
   );

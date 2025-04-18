@@ -10,6 +10,7 @@ import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
 import { useRouter } from "expo-router";
 import Colors from "../../constant/Colors";
+import Button from "../Shared/Button";
 
 export default function Chapters({ doc, docId, classId, completedChapters }) {
   const router = useRouter();
@@ -21,7 +22,27 @@ export default function Chapters({ doc, docId, classId, completedChapters }) {
 
   return (
     <View style={{ padding: 20 }}>
-      <Text style={{ fontWeight: "bold", fontSize: 20 }}>Chương</Text>
+      <Button
+        text={"Bắt Đầu Ngay"}
+        type="fill"
+        onPress={() => {
+          if (doc?.chapters?.length > 0) {
+            router.push({
+              pathname: "/chapterView",
+              params: {
+                chapterParams: JSON.stringify(doc.chapters[0]),
+                chapterIndex: 0,
+                chapterDocId: docId,
+                chapterClassId: classId,
+              },
+            });
+          }
+        }}
+      />
+
+      <Text style={{ fontWeight: "bold", fontSize: 20, marginTop: 10 }}>
+        Chương
+      </Text>
       <FlatList
         data={doc?.chapters}
         renderItem={({ item, index }) => (

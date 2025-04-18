@@ -3,7 +3,6 @@ import { imageAssets } from "../../constant/Option";
 import Feather from "@expo/vector-icons/Feather";
 import React from "react";
 import Colors from "../../constant/Colors";
-import Button from "../Shared/Button";
 
 export default function Intro({ doc, classTilte }) {
   return (
@@ -76,7 +75,6 @@ export default function Intro({ doc, classTilte }) {
             {doc?.description}
           </Text>
         </View>
-        <Button text={"Bắt Đầu Ngay"} type="fill" style />
       </View>
     </View>
   );

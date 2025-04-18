@@ -70,22 +70,10 @@ export default function ChatRoom() {
         ...doc.data(),
       }));
 
-      const teacherMessages = chatList.filter(
-        (msg) => msg.senderRole === "teacher"
-      );
-      const lastTeacherMessage = teacherMessages[teacherMessages.length - 1];
-
-      const filteredMessages = lastTeacherMessage
-        ? chatList.filter((msg) => msg.id !== lastTeacherMessage.id)
-        : chatList;
-
-      const updatedMessages = lastTeacherMessage
-        ? [lastTeacherMessage, ...filteredMessages]
-        : chatList;
-
-      setMessages(updatedMessages);
       const pinned = chatList.find((msg) => msg.isPinned);
       setPinnedMessage(pinned || null);
+
+      setMessages(chatList);
 
       flatListRef.current?.scrollToEnd({ animated: true });
     });

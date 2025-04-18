@@ -49,7 +49,8 @@ export default function PracticeTypeHomeScreen() {
                   const studentMsv = userDetail?.msv;
                   const quizResults =
                     classData.docs[docId]?.[studentMsv]?.allQuizResult || [];
-                  const quizCountMax = classData.docs[docId]?.quizCountMax || 1;
+                  const quizCountMax =
+                    classData.docs[docId]?.[studentMsv]?.quizCountMax || 1;
 
                   // Tìm lần làm có điểm cao nhất
                   const bestAttempt = quizResults.reduce(

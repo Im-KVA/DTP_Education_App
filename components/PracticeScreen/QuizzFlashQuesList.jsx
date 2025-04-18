@@ -6,6 +6,7 @@ import { useRouter } from "expo-router";
 
 export default function QuizzFlashQuesList({ item, option }) {
   const router = useRouter();
+  console.log("Item in QuizzFlashQuesList:", item);
 
   const handleQuizStart = () => {
     if (option?.name == "Kiểm tra") {
