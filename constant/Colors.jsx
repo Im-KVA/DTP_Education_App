@@ -4,6 +4,7 @@ export default {
   LIGHT_PRIMARY: "#1c82df",
   GRAY: "#858585",
   BG_GRAY: "#DFDFDFB5",
+  BG_YELLOW: "#fffef7",
   BLACK: "#000",
   GREEN: "#24b351",
   LIGHT_GREEN: "#dbffdd",

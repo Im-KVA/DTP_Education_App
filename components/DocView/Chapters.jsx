@@ -4,6 +4,7 @@ import {
   FlatList,
   StyleSheet,
   TouchableOpacity,
+  Dimensions,
 } from "react-native";
 import Entypo from "@expo/vector-icons/Entypo";
 import AntDesign from "@expo/vector-icons/AntDesign";
@@ -12,6 +13,7 @@ import Colors from "../../constant/Colors";
 
 export default function Chapters({ doc, docId, classId, completedChapters }) {
   const router = useRouter();
+  const screenWidth = Dimensions.get("window").width;
 
   const isChapterCompleted = (index) => {
     return completedChapters.includes(String(index));
@@ -45,7 +47,13 @@ export default function Chapters({ doc, docId, classId, completedChapters }) {
               alignItems: "center",
             }}
           >
-            <View style={{ flexDirection: "row", gap: 10 }}>
+            <View
+              style={{
+                flexDirection: "row",
+                gap: 10,
+                maxWidth: screenWidth * 0.6,
+              }}
+            >
               <Text style={styles.chapterText}>{index + 1}.</Text>
               <Text style={styles.chapterText}>{item.chapterName} </Text>
             </View>

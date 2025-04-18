@@ -199,7 +199,7 @@ export default function SignIn() {
               onPress={() =>
                 router.push({
                   pathname: "/auth/changePassword",
-                  params: { email, msv: userDetail?.msv || "" },
+                  params: { emailSV: email, msvSV: userDetail?.msv || "" },
                 })
               }
             >

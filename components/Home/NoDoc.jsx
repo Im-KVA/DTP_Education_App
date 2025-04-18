@@ -44,7 +44,11 @@ export default function NoDoc() {
         type="fill"
         onPress={() => router.push("/(tabs)/explore")}
       />
-      <Button text={"Liên hệ giảng viên"} type="outline" />
+      <Button
+        text={"Liên hệ giảng viên"}
+        type="outline"
+        onPress={() => router.push("/(tabs)/discuss")}
+      />
     </View>
   );
 }
