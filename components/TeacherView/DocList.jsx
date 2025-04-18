@@ -62,7 +62,6 @@ const DocList = ({ teacherId }) => {
   };
 
   if (loading) return <p>Đang tải...</p>;
-  if (docs.length === 0) return <p>Không có tài liệu nào.</p>;
 
   return (
     <div style={{ margin: 20 }}>

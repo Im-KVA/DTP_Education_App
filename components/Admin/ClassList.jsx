@@ -4,10 +4,11 @@ import {
   collection,
   getDocs,
   updateDoc,
-  addDoc,
+  setDoc,
   doc,
   deleteDoc,
   onSnapshot,
+  query as firestoreQuery,
 } from "firebase/firestore";
 
 const ClassList = () => {
@@ -21,6 +22,7 @@ const ClassList = () => {
   const [newClass, setNewClass] = useState({
     className: "",
     classTeacherId: "",
+    classId: "",
     numStudentMax: "",
   });
 
@@ -61,49 +63,64 @@ const ClassList = () => {
   }, [fetchClasses, fetchTeachers]);
 
   useEffect(() => {
-    const unsubscribe = onSnapshot(collection(db, "classes"), (snapshot) => {
-      const classData = snapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setClasses(classData);
-    });
+    const unsubscribe = onSnapshot(
+      firestoreQuery(collection(db, "classes")),
+      (snapshot) => {
+        const fetched = snapshot.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setClasses(fetched);
+      }
+    );
 
     return () => unsubscribe();
   }, []);
 
   const addClass = async () => {
+    const className = newClass.className?.trim();
+    const classId = newClass.classId?.trim();
+    const classTeacherId = newClass.classTeacherId?.trim();
     const maxStudents = Number(newClass.numStudentMax);
-    if (!newClass.className || !newClass.classTeacherId || maxStudents <= 0) {
+
+    const isValidInput =
+      className &&
+      classId &&
+      classTeacherId &&
+      !isNaN(maxStudents) &&
+      maxStudents > 0;
+
+    if (!isValidInput) {
       alert("Vui lòng nhập đầy đủ thông tin lớp học với số sinh viên hợp lệ.");
       return;
     }
 
+    const classData = {
+      className,
+      classId,
+      classTeacherId,
+      numStudentMax: maxStudents,
+      numStudent: 0,
+      status: "open",
+      docs: {},
+      students: {},
+    };
+
     try {
-      const docRef = await addDoc(collection(db, "classes"), {
-        className: newClass.className,
-        classTeacherId: newClass.classTeacherId,
-        numStudentMax: maxStudents,
-        numStudent: 0,
-        status: "open",
-        docs: {},
-        students: {},
-      });
-      setClasses((prev) => [
-        ...prev,
-        {
-          id: docRef.id,
-          ...newClass,
-          numStudentMax: maxStudents,
-          numStudent: 0,
-          status: "open",
-          docs: {},
-          students: {},
-        },
-      ]);
+      const classDocRef = doc(db, "classes", classId);
+      await setDoc(classDocRef, classData);
+
+      // setClasses((prev) => [
+      //   ...prev,
+      //   {
+      //     id: classId,
+      //     ...classData,
+      //   },
+      // ]);
+
       setShowAddClass(false);
     } catch (error) {
-      console.error("Lỗi khi thêm lớp:", error);
+      console.error("❌ Lỗi khi thêm lớp:", error);
       alert("Không thể thêm lớp. Vui lòng thử lại!");
     }
   };
@@ -333,6 +350,14 @@ const ClassList = () => {
               setNewClass({ ...newClass, className: e.target.value })
             }
           />
+          <input
+            type="text"
+            placeholder="Mã lớp"
+            value={newClass.classId}
+            onChange={(e) =>
+              setNewClass({ ...newClass, classId: e.target.value })
+            }
+          />
           <select
             onChange={(e) =>
               setNewClass({ ...newClass, classTeacherId: e.target.value })
@@ -373,6 +398,13 @@ const ClassList = () => {
             value={editClass.className}
             onChange={(e) =>
               setEditClass({ ...editClass, className: e.target.value })
+            }
+          />
+          <input
+            type="text"
+            value={editClass.classId}
+            onChange={(e) =>
+              setEditClass({ ...editClass, classId: e.target.value })
             }
           />
           <select
