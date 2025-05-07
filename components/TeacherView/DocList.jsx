@@ -113,7 +113,7 @@ const DocList = ({ teacherId }) => {
       <div
         style={{
           overflowY: "auto",
-          maxHeight: "calc(100dvh - 35dvh)",
+          maxHeight: "calc(100dvh - 45dvh)",
           paddingBottom: "10px",
         }}
       >

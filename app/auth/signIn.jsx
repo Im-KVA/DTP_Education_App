@@ -146,7 +146,7 @@ export default function SignIn() {
   return (
     <View style={styles.container}>
       <Image
-        source={require("./../../assets/images/logo-neu.png")}
+        source={require("./../../assets/images/logo-removebg.png")}
         style={styles.logo}
       />
       <Text style={styles.title}>Thông Tin Tài Khoản</Text>

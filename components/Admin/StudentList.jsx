@@ -165,25 +165,38 @@ export default function StudentList() {
           Thêm sinh viên
         </Text>
       </TouchableOpacity>
-      <FlatList
-        data={filteredStudents}
-        keyExtractor={(item) => item.email}
-        renderItem={({ item }) => (
-          <View
-            style={{
-              padding: 10,
-              marginBottom: 10,
-              backgroundColor: "#f0f0f0",
-              borderRadius: 8,
-            }}
-          >
-            <Text>Mã SV: {item.msv}</Text>
-            <Text>Họ tên: {item.name}</Text>
-            <Text>Email: {item.email}</Text>
-            <Text>Password: {item.password}</Text>
-          </View>
-        )}
-      />
+      <View style={{ marginBottom: 10 }}>
+        {/* Header */}
+        <View
+          style={{ flexDirection: "row", backgroundColor: "#ddd", padding: 10 }}
+        >
+          <Text style={{ flex: 1, fontWeight: "bold" }}>Mã SV</Text>
+          <Text style={{ flex: 2, fontWeight: "bold" }}>Họ tên</Text>
+          <Text style={{ flex: 2, fontWeight: "bold" }}>Email</Text>
+          <Text style={{ flex: 1, fontWeight: "bold" }}>Password</Text>
+        </View>
+
+        {/* Data */}
+        <FlatList
+          data={filteredStudents}
+          keyExtractor={(item) => item.email}
+          renderItem={({ item }) => (
+            <View
+              style={{
+                flexDirection: "row",
+                padding: 10,
+                borderBottomWidth: 1,
+                borderColor: "#ccc",
+              }}
+            >
+              <Text style={{ flex: 1 }}>{item.msv}</Text>
+              <Text style={{ flex: 2 }}>{item.name}</Text>
+              <Text style={{ flex: 2 }}>{item.email}</Text>
+              <Text style={{ flex: 1 }}>{item.password}</Text>
+            </View>
+          )}
+        />
+      </View>
 
       {/* Modal thêm sinh viên */}
       <Modal visible={modalVisible} animationType="slide" transparent={true}>
@@ -192,11 +205,14 @@ export default function StudentList() {
             flex: 1,
             backgroundColor: "#000000aa",
             justifyContent: "center",
+            alignItems: "center",
             padding: 20,
           }}
         >
           <View
             style={{
+              minWidth: "50%",
+              maxWidth: "70%",
               backgroundColor: "white",
               padding: 20,
               borderRadius: 10,

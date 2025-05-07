@@ -43,7 +43,7 @@ export default function Profile() {
       }}
     >
       <Image
-        source={require("./../../assets/images/logo-neu.png")}
+        source={require("./../../assets/images/logo-removebg.png")}
         style={styles.logo}
       />
       <View style={styles.card}>

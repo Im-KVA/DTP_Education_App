@@ -146,7 +146,7 @@ export default function SignIn() {
   return (
     <View style={styles.container}>
       <Image
-        source={require("./../../assets/images/logo-neu.png")}
+        source={require("./../../assets/images/logo-removebg.png")}
         style={styles.logo}
       />
       <Text style={styles.title}>Thông Tin Tài Khoản</Text>
@@ -219,7 +219,7 @@ const styles = StyleSheet.create({
   },
   textInput: {
     borderWidth: 1,
-    width: "100%",
+    width: "50%",
     padding: 15,
     fontSize: 18,
     marginTop: 20,
@@ -228,7 +228,7 @@ const styles = StyleSheet.create({
   button: {
     padding: 15,
     backgroundColor: Colors.PRIMARY,
-    width: "100%",
+    width: "50%",
     marginTop: 25,
     borderRadius: 10,
     alignItems: "center",

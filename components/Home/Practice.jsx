@@ -4,8 +4,18 @@ import React from "react";
 import Colors from "../../constant/Colors";
 import { useRouter } from "expo-router";
 
-export default function Practice() {
+export default function Practice({ classId }) {
   const router = useRouter();
+
+  const handlePress = (item) => {
+    const basePath = "/practice/" + item.name;
+    const fullPath = classId
+      ? { pathname: basePath, params: { classId } }
+      : basePath;
+
+    router.push(fullPath);
+  };
+
   return (
     <View>
       <Text
@@ -24,7 +34,7 @@ export default function Practice() {
         numColumns={3}
         renderItem={({ item, index }) => (
           <TouchableOpacity
-            onPress={() => router.push("/practice/" + item.name)}
+            onPress={() => handlePress(item)}
             key={index}
             style={{
               flex: 1,

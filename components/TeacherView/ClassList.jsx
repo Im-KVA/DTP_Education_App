@@ -124,7 +124,7 @@ const ClassList = ({ teacherId, teacherEmail }) => {
       </p>
       <div
         style={{
-          maxHeight: "calc(100vh - 30vh)",
+          maxHeight: "calc(100vh - 40vh)",
           overflowY: "auto",
           padding: 10,
         }}

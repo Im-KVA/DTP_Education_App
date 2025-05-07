@@ -18,7 +18,7 @@ import { UserDetailContext } from "../../../context/UserDetailContext";
 
 export default function PracticeTypeHomeScreen() {
   const { userDetail } = useContext(UserDetailContext);
-  const { type } = useLocalSearchParams();
+  const { type, classId } = useLocalSearchParams();
   const option = PracticeOption.find((item) => item.name == type);
   const router = useRouter();
   const [docQuizzList, setDocQuizzList] = useState([]);
@@ -28,8 +28,14 @@ export default function PracticeTypeHomeScreen() {
     try {
       console.log("🔍 Đang lấy danh sách tài liệu từ Firestore...");
 
-      const classesRef = collection(db, "classes");
-      const classSnapshot = await getDocs(classesRef);
+      const classesRef = classId
+        ? doc(db, "classes", classId)
+        : collection(db, "classes");
+
+      const classSnapshot = classId
+        ? [await getDoc(classesRef)]
+        : await getDocs(classesRef);
+
       const docPromises = [];
 
       classSnapshot.forEach((classDoc) => {

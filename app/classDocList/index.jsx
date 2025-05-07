@@ -11,6 +11,7 @@ import { router, useLocalSearchParams } from "expo-router";
 import { db } from "../../config/firebaseConfig";
 import { doc, getDoc } from "firebase/firestore";
 import DocList from "../../components/Home/DocList";
+import Practice from "../../components/Home/Practice";
 import Colors from "../../constant/Colors";
 import Ionicons from "@expo/vector-icons/Ionicons";
 
@@ -99,7 +100,7 @@ export default function ClassDocList() {
           <Text
             style={{ fontSize: 32, fontWeight: "bold", color: Colors.WHITE }}
           >
-            Tài liệu lớp: {className || classId}
+            Nội dung lớp: {className || classId}
           </Text>
         </TouchableOpacity>
 
@@ -110,6 +111,7 @@ export default function ClassDocList() {
         ) : (
           <ScrollView>
             <DocList docList={docList} />
+            <Practice classId={classId} />
           </ScrollView>
         )}
       </View>
