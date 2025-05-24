@@ -49,7 +49,7 @@ const TeacherView = () => {
   if (!teacherInfo) return <p>Không có thông tin giáo viên!</p>;
 
   return (
-    <div>
+    <div style={{ height: "100vh", overflowY: "auto" }}>
       <Header setView={setView} />
       {view === "classes" ? (
         <ClassList

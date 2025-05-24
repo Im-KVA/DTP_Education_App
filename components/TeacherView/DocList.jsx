@@ -84,7 +84,7 @@ const DocList = ({ teacherId }) => {
         >
           ➕ Thêm tài liệu bằng AI
         </button>
-        <button
+        {/* <button
           style={{
             ...addDocButton,
             backgroundColor: "#4287f5",
@@ -95,7 +95,7 @@ const DocList = ({ teacherId }) => {
           onMouseLeave={(e) => (e.target.style.backgroundColor = "#4287f5")}
         >
           ➕ Thêm tài liệu bằng JSON
-        </button>
+        </button> */}
         <button
           style={{
             ...addDocButton,
@@ -112,8 +112,6 @@ const DocList = ({ teacherId }) => {
 
       <div
         style={{
-          overflowY: "auto",
-          maxHeight: "calc(100dvh - 45dvh)",
           paddingBottom: "10px",
         }}
       >
