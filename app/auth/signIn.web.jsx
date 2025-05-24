@@ -16,6 +16,7 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "./../../config/firebaseConfig";
 import { UserDetailContext } from "./../../context/UserDetailContext";
 import Toast from "react-native-toast-message";
+import { toastConfig } from "../../config/toastConfig";
 import { doc, getDoc } from "firebase/firestore";
 
 export default function SignIn() {
@@ -35,40 +36,41 @@ export default function SignIn() {
     try {
       const userCollections = ["users", "users_teacher", "users_admin"];
       let foundUser = null;
+      let matchedRole = "";
 
       for (const collection of userCollections) {
         const userRef = doc(db, collection, email);
         const result = await getDoc(userRef);
         if (result.exists()) {
           foundUser = result.data();
-          setUserRole(collection);
+          matchedRole = collection;
           break;
         }
       }
 
       if (foundUser) {
-        if (
-          (userRole === "users" &&
+        const isInvalidDevice =
+          (matchedRole === "users" &&
             Platform.OS !== "android" &&
             Platform.OS !== "ios") ||
-          ((userRole === "users_teacher" || userRole === "users_admin") &&
-            (Platform.OS === "android" || Platform.OS === "ios"))
-        ) {
+          ((matchedRole === "users_teacher" || matchedRole === "users_admin") &&
+            (Platform.OS === "android" || Platform.OS === "ios"));
+
+        if (isInvalidDevice) {
           Toast.show({
             type: "error",
             text1: "Lỗi đăng nhập",
             text2:
-              userRole === "users"
+              matchedRole === "users"
                 ? "Bạn đang dùng tài khoản sinh viên. Vui lòng đăng nhập trên điện thoại."
                 : "Tài khoản bạn đang dùng không dành cho sinh viên. Vui lòng đăng nhập trên web.",
           });
-          setCheckingEmail(false);
-          setCurrentUser(null);
+          setEmailExists(false);
+          setUserDetail(null);
           return;
         }
 
-        console.log(userRole);
-
+        setUserRole(matchedRole);
         setEmailExists(true);
         setUserDetail(foundUser);
       } else {
@@ -195,7 +197,7 @@ export default function SignIn() {
         </>
       )}
 
-      <Toast />
+      <Toast config={toastConfig} />
     </View>
   );
 }
