@@ -78,6 +78,15 @@ export default function Index() {
         if (!querySnapshot.empty) {
           const userDoc = querySnapshot.docs[0];
           const userData = userDoc.data();
+
+          if (userData.disable === true) {
+            Alert.alert(
+              "Thông báo",
+              "❌ Tài khoản đã bị khóa. Hãy liên hệ Admin để được hỗ trợ."
+            );
+            return;
+          }
+
           const { email, password } = userData;
 
           console.log("🔐 Đang đăng nhập với:", email);

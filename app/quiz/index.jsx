@@ -70,7 +70,7 @@ export default function Quiz() {
       const classData = classSnap.data();
       const docData = classData?.docs?.[doc.docId] || {};
       const quizAttempts = docData?.[studentId]?.allQuizResult || [];
-      const quizCountMax = docData?.quizCountMax || 1;
+      const quizCountMax = docData?.[studentId]?.quizCountMax || 1;
 
       if (quizAttempts.length < quizCountMax) {
         setIsLoading(false);
