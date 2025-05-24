@@ -208,7 +208,7 @@ export default function SignIn() {
           </TouchableOpacity>
 
           <View style={styles.footer}>
-            <Text>Bạn là sinh viên mới? / Quên mật khẩu?</Text>
+            <Text>Bạn là sinh viên mới? </Text>
             <Pressable
               onPress={() =>
                 router.push({

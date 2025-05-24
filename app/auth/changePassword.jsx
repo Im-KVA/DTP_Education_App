@@ -134,7 +134,7 @@ export default function ChangePassword() {
     <ScrollView>
       <View style={styles.container}>
         <Image
-          source={require("./../../assets/images/logo-neu.png")}
+          source={require("./../../assets/images/logo-removebg.png")}
           style={styles.logo}
         />
         <Text style={styles.title}>Đổi mật khẩu</Text>
