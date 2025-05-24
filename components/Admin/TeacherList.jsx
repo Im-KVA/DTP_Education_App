@@ -22,6 +22,8 @@ export default function TeacherList() {
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredTeachers, setFilteredTeachers] = useState([]);
+  const [confirmModalVisible, setConfirmModalVisible] = useState(false);
+  const [selectedTeacher, setSelectedTeacher] = useState(null);
 
   const fetchTeachers = async () => {
     const querySnapshot = await getDocs(collection(db, "users_teacher"));
@@ -98,6 +100,34 @@ export default function TeacherList() {
     );
 
     setFilteredTeachers(result);
+  };
+
+  const handleToggleLockTeacher = (teacher) => {
+    setSelectedTeacher(teacher);
+    setConfirmModalVisible(true);
+  };
+
+  const confirmToggleLock = async () => {
+    if (!selectedTeacher) return;
+
+    const updatedStatus = !selectedTeacher.isLocked;
+    const action = updatedStatus ? "khóa" : "mở khóa";
+
+    try {
+      await setDoc(
+        doc(db, "users_teacher", selectedTeacher.email),
+        { isLocked: updatedStatus },
+        { merge: true }
+      );
+      showAlert("Thành công", `Đã ${action} tài khoản giáo viên.`);
+      fetchTeachers();
+    } catch (err) {
+      console.error("Lỗi khi cập nhật trạng thái:", err);
+      showAlert("Lỗi", `Không thể ${action} giáo viên.`);
+    } finally {
+      setConfirmModalVisible(false);
+      setSelectedTeacher(null);
+    }
   };
 
   const showAlert = (title, message) => {
@@ -191,6 +221,19 @@ export default function TeacherList() {
               <Text style={{ flex: 2 }}>{item.name}</Text>
               <Text style={{ flex: 2 }}>{item.email}</Text>
               <Text style={{ flex: 1 }}>{item.password}</Text>
+              <TouchableOpacity
+                onPress={() => handleToggleLockTeacher(item)}
+                style={{
+                  padding: 5,
+                  backgroundColor: item.isLocked ? "#f66" : "#6c6",
+                  borderRadius: 5,
+                  marginLeft: 10,
+                }}
+              >
+                <Text style={{ color: "#fff", fontSize: 12 }}>
+                  {item.isLocked ? "Mở khóa" : "Khóa"}
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
         />
@@ -277,6 +320,67 @@ export default function TeacherList() {
                 <Text style={{ color: "#fff" }}>
                   {isLoading ? "Đang thêm..." : "Thêm"}
                 </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal khóa/mở khóa giáo viên */}
+      <Modal visible={confirmModalVisible} transparent animationType="fade">
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "#00000088",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 20,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "#fff",
+              borderRadius: 10,
+              padding: 20,
+              width: "100%",
+              maxWidth: 400,
+            }}
+          >
+            <Text style={{ fontSize: 16, marginBottom: 10 }}>
+              Bạn có chắc chắn muốn{" "}
+              <Text style={{ fontWeight: "bold" }}>
+                {selectedTeacher?.isLocked ? "mở khóa" : "khóa"}
+              </Text>{" "}
+              tài khoản của{" "}
+              <Text style={{ fontWeight: "bold" }}>
+                {selectedTeacher?.name}
+              </Text>
+              ?
+            </Text>
+            <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+              <TouchableOpacity
+                onPress={() => {
+                  setConfirmModalVisible(false);
+                  setSelectedTeacher(null);
+                }}
+                style={{
+                  padding: 10,
+                  backgroundColor: "#ccc",
+                  borderRadius: 5,
+                  marginRight: 10,
+                }}
+              >
+                <Text>Hủy</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={confirmToggleLock}
+                style={{
+                  padding: 10,
+                  backgroundColor: Colors.PRIMARY,
+                  borderRadius: 5,
+                }}
+              >
+                <Text style={{ color: "#fff" }}>Xác nhận</Text>
               </TouchableOpacity>
             </View>
           </View>

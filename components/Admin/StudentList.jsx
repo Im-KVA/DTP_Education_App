@@ -8,7 +8,13 @@ import {
   Modal,
   Alert,
 } from "react-native";
-import { collection, getDocs, setDoc, doc } from "firebase/firestore";
+import {
+  collection,
+  getDocs,
+  setDoc,
+  doc,
+  updateDoc,
+} from "firebase/firestore";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { db, auth } from "../../config/firebaseConfig";
 import { Platform } from "react-native";
@@ -22,6 +28,15 @@ export default function StudentList() {
   const [isLoading, setIsLoading] = useState(false);
   const [searchTerm, setSearchTerm] = useState("");
   const [filteredStudents, setFilteredStudents] = useState([]);
+  const [confirmVisible, setConfirmVisible] = useState(false);
+  const [confirmMessage, setConfirmMessage] = useState("");
+  const [onConfirm, setOnConfirm] = useState(() => () => {});
+
+  const showConfirm = (message, onConfirmCallback) => {
+    setConfirmMessage(message);
+    setOnConfirm(() => onConfirmCallback);
+    setConfirmVisible(true);
+  };
 
   const fetchStudents = async () => {
     const querySnapshot = await getDocs(collection(db, "users"));
@@ -100,6 +115,45 @@ export default function StudentList() {
     );
 
     setFilteredStudents(result);
+  };
+
+  const handleDisableStudent = (student) => {
+    showConfirm(
+      `Bạn có muốn vô hiệu hóa tài khoản của sinh viên ${student.name}?`,
+      async () => {
+        try {
+          const userRef = doc(db, "users", student.email);
+          await updateDoc(userRef, { disable: true });
+
+          showAlert("Thành công", `Đã vô hiệu hóa sinh viên ${student.name}`);
+          fetchStudents();
+        } catch (err) {
+          console.error(`Lỗi khi vô hiệu hóa ${student.name}:`, err);
+          showAlert("Lỗi", `Không thể vô hiệu hóa sinh viên: ${student.name}`);
+        }
+      }
+    );
+  };
+
+  const handleEnableStudent = (student) => {
+    showConfirm(
+      `Bạn có muốn mở khóa tài khoản của sinh viên ${student.name}?`,
+      async () => {
+        try {
+          const userRef = doc(db, "users", student.email);
+          await updateDoc(userRef, { disable: false });
+
+          showAlert(
+            "Thành công",
+            `Đã mở khóa tài khoản sinh viên ${student.name}`
+          );
+          fetchStudents();
+        } catch (err) {
+          console.error(`Lỗi khi mở khóa ${student.name}:`, err);
+          showAlert("Lỗi", `Không thể mở khóa sinh viên: ${student.name}`);
+        }
+      }
+    );
   };
 
   const showAlert = (title, message) => {
@@ -187,12 +241,33 @@ export default function StudentList() {
                 padding: 10,
                 borderBottomWidth: 1,
                 borderColor: "#ccc",
+                alignItems: "center",
+                backgroundColor: item.disable ? "#eee" : "transparent",
+                opacity: item.disable ? 0.5 : 1,
               }}
             >
               <Text style={{ flex: 1 }}>{item.msv}</Text>
               <Text style={{ flex: 2 }}>{item.name}</Text>
               <Text style={{ flex: 2 }}>{item.email}</Text>
               <Text style={{ flex: 1 }}>{item.password}</Text>
+              <TouchableOpacity
+                onPress={() =>
+                  item.disable
+                    ? handleEnableStudent(item)
+                    : handleDisableStudent(item)
+                }
+                style={{
+                  backgroundColor: item.disable ? "green" : "orange",
+                  paddingVertical: 4,
+                  paddingHorizontal: 8,
+                  borderRadius: 5,
+                  marginLeft: 10,
+                }}
+              >
+                <Text style={{ color: "#fff", fontSize: 12 }}>
+                  {item.disable ? "Mở khóa TK" : "Khóa tài khoản"}
+                </Text>
+              </TouchableOpacity>
             </View>
           )}
         />
@@ -282,6 +357,58 @@ export default function StudentList() {
                 <Text style={{ color: "#fff" }}>
                   {isLoading ? "Đang thêm..." : "Thêm"}
                 </Text>
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Modal khóa/mở khóa sinh viên */}
+      <Modal visible={confirmVisible} transparent animationType="fade">
+        <View
+          style={{
+            flex: 1,
+            backgroundColor: "rgba(0, 0, 0, 0.5)",
+            justifyContent: "center",
+            alignItems: "center",
+            padding: 20,
+          }}
+        >
+          <View
+            style={{
+              backgroundColor: "white",
+              padding: 20,
+              borderRadius: 10,
+              minWidth: "50%",
+            }}
+          >
+            <Text style={{ fontSize: 16, marginBottom: 20 }}>
+              {confirmMessage}
+            </Text>
+            <View style={{ flexDirection: "row", justifyContent: "flex-end" }}>
+              <TouchableOpacity
+                onPress={() => setConfirmVisible(false)}
+                style={{
+                  padding: 10,
+                  backgroundColor: "#ccc",
+                  borderRadius: 5,
+                  marginRight: 10,
+                }}
+              >
+                <Text>Hủy</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+                onPress={() => {
+                  setConfirmVisible(false);
+                  onConfirm();
+                }}
+                style={{
+                  padding: 10,
+                  backgroundColor: "red",
+                  borderRadius: 5,
+                }}
+              >
+                <Text style={{ color: "#fff" }}>Xác nhận</Text>
               </TouchableOpacity>
             </View>
           </View>

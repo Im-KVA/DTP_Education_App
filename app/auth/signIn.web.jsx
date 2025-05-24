@@ -49,6 +49,18 @@ export default function SignIn() {
       }
 
       if (foundUser) {
+        if (matchedRole === "users_teacher" && foundUser.isLocked) {
+          Toast.show({
+            type: "error",
+            text1: "Tài khoản bị khóa",
+            text2:
+              "Tài khoản giáo viên này đã bị khóa. Vui lòng liên hệ Admin để được hỗ trợ.",
+          });
+          setEmailExists(false);
+          setUserDetail(null);
+          return;
+        }
+
         const isInvalidDevice =
           (matchedRole === "users" &&
             Platform.OS !== "android" &&
